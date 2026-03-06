@@ -1,40 +1,80 @@
 #include <stdio.h>
+#include <stdio.h>
 
-// Desafio Batalha Naval - MateCheck
-// Este código inicial serve como base para o desenvolvimento do sistema de Batalha Naval.
-// Siga os comentários para implementar cada parte do desafio.
+#define TAMANHO 10
+#define NAVIO 3
+#define HABILIDADE 1
+#define VAZIO 0
+
+// Função para exibir o tabuleiro
+void exibirTabuleiro(int tabuleiro[TAMANHO][TAMANHO]) {
+    for (int i = 0; i < TAMANHO; i++) {
+        for (int j = 0; j < TAMANHO; j++) {
+            printf("%d ", tabuleiro[i][j]);
+        }
+        printf("\n");
+    }
+    printf("\n");
+}
 
 int main() {
-    // Nível Novato - Posicionamento dos Navios
-    // Sugestão: Declare uma matriz bidimensional para representar o tabuleiro (Ex: int tabuleiro[5][5];).
-    // Sugestão: Posicione dois navios no tabuleiro, um verticalmente e outro horizontalmente.
-    // Sugestão: Utilize `printf` para exibir as coordenadas de cada parte dos navios.
+    int tabuleiro[TAMANHO][TAMANHO] = {0};
 
-    // Nível Aventureiro - Expansão do Tabuleiro e Posicionamento Diagonal
-    // Sugestão: Expanda o tabuleiro para uma matriz 10x10.
-    // Sugestão: Posicione quatro navios no tabuleiro, incluindo dois na diagonal.
-    // Sugestão: Exiba o tabuleiro completo no console, mostrando 0 para posições vazias e 3 para posições ocupadas.
-
-    // Nível Mestre - Habilidades Especiais com Matrizes
-    // Sugestão: Crie matrizes para representar habilidades especiais como cone, cruz, e octaedro.
-    // Sugestão: Utilize estruturas de repetição aninhadas para preencher as áreas afetadas por essas habilidades no tabuleiro.
-    // Sugestão: Exiba o tabuleiro com as áreas afetadas, utilizando 0 para áreas não afetadas e 1 para áreas atingidas.
-
-    // Exemplos de exibição das habilidades:
-    // Exemplo para habilidade em cone:
-    // 0 0 1 0 0
-    // 0 1 1 1 0
-    // 1 1 1 1 1
+    // --- POSICIONAMENTO DE NAVIOS (Nível Aventureiro) ---
     
-    // Exemplo para habilidade em octaedro:
-    // 0 0 1 0 0
-    // 0 1 1 1 0
-    // 0 0 1 0 0
+    // Navio Horizontal (Linha 1, Colunas 2 a 4)
+    for(int j = 2; j <= 4; j++) tabuleiro[1][j] = NAVIO;
 
-    // Exemplo para habilidade em cruz:
-    // 0 0 1 0 0
-    // 1 1 1 1 1
-    // 0 0 1 0 0
+    // Navio Vertical (Linhas 5 a 7, Coluna 1)
+    for(int i = 5; i <= 7; i++) tabuleiro[i][1] = NAVIO;
+
+    // Navio Diagonal 1 (Caindo: (2,7), (3,8), (4,9))
+    for(int i = 0; i < 3; i++) tabuleiro[2+i][7+i] = NAVIO;
+
+    // Navio Diagonal 2 (Subindo: (7,2), (8,1))
+    for(int i = 0; i < 2; i++) tabuleiro[7+i][2-i] = NAVIO;
+
+    printf("### Tabuleiro com Navios ###\n");
+    exibirTabuleiro(tabuleiro);
+
+    // --- HABILIDADES ESPECIAIS (Nível Mestre) ---
+
+    // 1. Habilidade em CONE (Inicia em 0,4)
+    int cone[TAMANHO][TAMANHO] = {0};
+    int centroX = 0, centroY = 4;
+    for (int i = 0; i < 3; i++) { // Altura do cone
+        for (int j = centroY - i; j <= centroY + i; j++) {
+            if (i >= 0 && i < TAMANHO && j >= 0 && j < TAMANHO)
+                cone[i][j] = HABILIDADE;
+        }
+    }
+    printf("### Habilidade: Cone ###\n");
+    exibirTabuleiro(cone);
+
+    // 2. Habilidade em CRUZ (Centro em 5,5)
+    int cruz[TAMANHO][TAMANHO] = {0};
+    int cX = 5, cY = 5;
+    for (int k = 0; k < 5; k++) {
+        cruz[cX][cY-2+k] = HABILIDADE; // Horizontal
+        cruz[cX-2+k][cY] = HABILIDADE; // Vertical
+    }
+    printf("### Habilidade: Cruz ###\n");
+    exibirTabuleiro(cruz);
+
+    // 3. Habilidade em OCTAEDRO (Losango - Centro em 8,5)
+    int octa[TAMANHO][TAMANHO] = {0};
+    int oX = 8, oY = 5;
+    for (int i = -2; i <= 2; i++) {
+        for (int j = -2; j <= 2; j++) {
+            // A lógica do octaedro/losango é baseada na distância de Manhattan: |dx| + |dy| <= raio
+            if ((i < 0 ? -i : i) + (j < 0 ? -j : j) <= 2) {
+                if (oX+i >= 0 && oX+i < TAMANHO && oY+j >= 0 && oY+j < TAMANHO)
+                    octa[oX+i][oY+j] = HABILIDADE;
+            }
+        }
+    }
+    printf("### Habilidade: Octaedro ###\n");
+    exibirTabuleiro(octa);
 
     return 0;
 }
